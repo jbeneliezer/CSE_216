@@ -1,0 +1,5 @@
+"Rule: ocaml: cmx* & o* -> native (%=int_exponent )": ".^\0170\174\t\232B\169\176Mm]\249{@"
+"Rule: ocaml: ml & cmi -> cmx & o (%=int_exponent )": "\165\159\026\235aX_y\170\153Y\157v\171\1350"
+"Rule: ocaml dependencies ml (%=int_exponent )": "q\223CM\006s\252\165\030\171\190\139o\148\196R"
+"Rule: ocaml: ml -> cmo & cmi (%=int_exponent )": "\199\026\236\162\222\202\182x\164\016Z\014\200\t\227\206"
+"Resource: /home/jbeneliezer/repos/ocaml/hw1/int_exponent.ml": "\193\239\181\163\153M\n\169/LG\003E:\027\142"
