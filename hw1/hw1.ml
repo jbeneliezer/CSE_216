@@ -56,11 +56,17 @@ List.iter (printf "%d ") (slice int_list 3 10) ; printf "\n";;
 
 (*Question 5*)
 
+let rec equivs f lst = match lst with
+
 (*Question 6*)
 
-let rec is_prime x i = match (x mod i) with
+let is_prime n i = match (n mod i) with
     | 0 -> false
-    | x -> true
+    | 1 -> true
+    | _ -> is_prime(n mod (i + 1))
+;;
 
 let goldbach n =
     let rec find_pair x a b = 
+        
+
