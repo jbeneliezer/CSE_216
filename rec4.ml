@@ -1,4 +1,5 @@
 (*Question 1 *)
+
 type 'a binary_tree =
 	| Empty
 	| Node of 'a * 'a binary_tree * 'a binary_tree
@@ -33,5 +34,3 @@ let rec nodes_and_leaves = function
 			in
 			(p::left_nodes @ right_nodes, left_leaves @ right_leaves)
 ;;
-
-

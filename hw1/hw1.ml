@@ -1,25 +1,66 @@
-let rec pow x n =
-    if n = 0 then 1
-    else if n = 1 then x
-    else x * (pow x (n - 1));;
+open Printf
+
+let int_list = [1; 2; 2; 2; 2; 3; 4; 5; 4; 5; 8; 1; 2; 8; 10];;
+List.iter (printf "%d ") int_list; printf "\n";;
+
+(*Question 1*)
+
+let rec pow x n = match n with
+    | 0 -> 1
+    | _ -> x * (pow x (n - 1))
+;;
+
+printf "%d\n" (pow 2 10);;
+
+(*Question 1 part 2*)
 
 let rec float_pow x n = match n with
-    | 0 -> 1.0
-    | _ -> x *. (float_pow x (n - 1));;
+    | 0-> 1.0
+    | _ -> x *. (float_pow x (n - 1))
+;;
 
-let rec compress lst = match lst with
-    | [] -> []
-    | h::[] -> [h]
-    | h::s::t -> if h = s then s::compress t else h::compress t;;
+printf "%f\n" (float_pow 3.5 7);;
 
-let l = ["h"; "h"; "e"; "d"; "d"];;
+(*Question 2*)
 
-compress l;;
+let rec compress = function 
+    | h::(s::t) -> if h = s then compress(s::t) else h::compress(s::t)
+    | _ -> lst
+;;
 
-let rec print_list_of_strings = function
-        | [] -> Printf.printf ""
-        | h::t -> begin
-                Printf.printf "%s", h;
-                print_list_of_strings t
-        end;;
-       
+List.iter (printf "%d ") (compress int_list) ; printf "\n";;
+
+(*Question 3*)
+
+let rec remove_if lst p = match lst with
+    | [] -> lst
+    | h::[] -> if (p h) then [] else lst
+    | h::t -> if (p h) then remove_if t p else h::remove_if t p
+;;
+
+List.iter (printf "%d ") (remove_if int_list (fun x -> x mod 2 = 1)); printf "\n";;
+
+(*Question 4*)
+
+let rec slice lst i j = match lst with 
+    | [] -> [] 
+    | h::t -> if i = 0 then begin
+            if j < 1 then []
+            else if j = 1 then [h]
+            else h::slice t 0 (j - 1)
+    end
+        else slice t (i - 1) (j - 1)
+;;
+
+List.iter (printf "%d ") (slice int_list 3 10) ; printf "\n";;
+
+(*Question 5*)
+
+(*Question 6*)
+
+let rec is_prime x i = match (x mod i) with
+    | 0 -> false
+    | x -> true
+
+let goldbach n =
+    let rec find_pair x a b = 
