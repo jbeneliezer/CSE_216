@@ -1,9 +1,11 @@
-open Printf
+(*open Printf*)
 
 (*test output*)
 
+(*
 let int_list = [1; 2; 2; 2; 2; 3; 4; 5; 4; 5; 8; 1; 2; 8; 10];;
 List.iter (printf "%d ") int_list; printf "\n";;
+*)
 
 (*Question 1*)
 
@@ -14,7 +16,7 @@ let rec pow x n = match n with
 
 (*test Question 1*)
 
-printf "%d\n" (pow 2 10);;
+(*printf "%d\n" (pow 2 10);;*)
 
 (*Question 1 part 2*)
 
@@ -25,7 +27,7 @@ let rec float_pow x n = match n with
 
 (*test Question 1 part 2*)
 
-printf "%f\n" (float_pow 3.5 7);;
+(*printf "%f\n" (float_pow 3.5 7);;*)
 
 (*Question 2*)
 
@@ -36,7 +38,7 @@ let rec compress lst = match lst with
 
 (*test Question *)
 
-List.iter (printf "%d ") (compress int_list) ; printf "\n";;
+(*List.iter (printf "%d ") (compress int_list) ; printf "\n";;*)
 
 (*Question 3*)
 
@@ -48,7 +50,7 @@ let rec remove_if lst p = match lst with
 
 (*test Question 3*)
 
-List.iter (printf "%d ") (remove_if int_list (fun x -> x mod 2 = 1)); printf "\n";;
+(*List.iter (printf "%d ") (remove_if int_list (fun x -> x mod 2 = 1)); printf "\n";;*)
 
 (*Question 4*)
 
@@ -64,7 +66,7 @@ let rec slice lst i j = match lst with
 
 (*test Question 4*)
 
-List.iter (printf "%d ") (slice int_list 3 10) ; printf "\n";;
+(*List.iter (printf "%d ") (slice int_list 3 10) ; printf "\n";;*)
 
 (*Question 5*)
 
@@ -86,8 +88,8 @@ let goldbach n =
 
 (*test Question 6*)
 
-let (x,y) = (goldbach 20) in
-printf "%d %d\n" x y
+(*let (x,y) = (goldbach 20) in
+printf "%d %d\n" x y*)
 
 
 (*Question 7*)
@@ -99,11 +101,12 @@ let rec equiv_on f g = function
 
 (*test Question 7*)
 
+(*
 let f i = i * i;;
 let g i = 3 * i;;
 
 printf "%b\n" (equiv_on f g [3;4;5;6;7]);;
-
+*)
 
 (*Question 8*)
 
@@ -125,9 +128,9 @@ let polynomial lst = compute lst;;
 
 (*test Question 9*)
 
-let f = polynomial [1,2;2,0];;
+(*let f = polynomial [1,2;2,0];;
 
-printf "%d\n" (f 2);;
+printf "%d\n" (f 2);;*)
              
 (*Question 10*)
 
@@ -138,4 +141,12 @@ let rec powerset lst = match lst with
 ;;
 
 (*test Question 10*)
+
+(*List.iter (List.iter (printf "%d ")) (powerset [1;2;3]); printf "\n" ;;*)
+
+
+
+
+
+
 
