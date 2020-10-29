@@ -15,4 +15,6 @@ public interface ThreeDShape extends Comparable<ThreeDShape> {
      * @return the volume of this three-dimensional shape.
      */
     double volume();
+
+    double surfaceArea();
 }

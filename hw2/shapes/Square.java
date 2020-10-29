@@ -32,5 +32,17 @@ public class Square extends Rectangle implements Snappable {
     @Override
     public Quadrilateral snap() {
         // TODO
+        List<TwoDPoint> l = this.getPosition();
+        for (TwoDPoint i: l) {
+            l.set(l.indexOf(i), new TwoDPoint(Math.round(i.coordinates()[0]), Math.round(i.coordinates()[1])));
+        }
+        double x = l.get(0).coordinates()[0];
+        double y = l.get(0).coordinates()[1];
+        for (TwoDPoint i: l) {
+            if (i.coordinates()[0] != x || i.coordinates()[1] != y) {
+                return new Quadrilateral(l);
+            }
+        }
+        return this;
     }
 }

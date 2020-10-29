@@ -4,7 +4,7 @@ import java.util.List;
 public class Circle implements Positionable, SymmetricTwoDShape {
 
     private TwoDPoint center;
-    private double    radius;
+    private double radius;
 
     public Circle(double centerx, double centery, double radius) {
         this.center = new TwoDPoint(centerx, centery);
@@ -52,4 +52,5 @@ public class Circle implements Positionable, SymmetricTwoDShape {
     public double area() {
         return Math.PI * Math.pow(radius, 2);
     }
+
 }

@@ -12,6 +12,8 @@ public interface TwoDShape {
      */
     int numSides();
 
+    Point center();
+
     /**
      * Checks whether or not a list of vertices is a valid collection of vertices for the type of two-dimensional shape.
      * @param vertices the list of vertices to check against, where each vertex is a <code>Point</code> type.
