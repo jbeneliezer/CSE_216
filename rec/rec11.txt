@@ -1,0 +1,52 @@
+#Question 1:
+
+class Employee(Person)
+return self.Name() + ", " + self.staffnumber
+
+#Question 2:
+
+a) 882016
+b)
+
+Class SportsPerson():
+	def __init__(self, isathlete):
+		self.isathlete = isathlete
+
+Class Athlete(Person, SportsPerson):
+	def __init__(self, name, idnumber, isathlete):
+		Person.__init__(self, name, idnumber)
+		SportsPerson.__init__(self, isathlete)
+	def display(self):
+		print(self.name, self.idnumber, self.isathlete)
+
+if __name__ == "__main__":
+	import sys
+	at = Athlete(sys.argv[1], 2341, sys.argv[2])
+	at.display()
+
+#Question 3:
+
+import logging
+
+def sample(message, num, fun):
+	for i in range(num):
+		fun(message)?
+
+#Question 4:
+
+def higher_add(increment):
+	def add_increment(numbers):
+		newnum = []
+		for n in numbers:
+			newnum.append(n+increment)
+		return newnum
+	return add_increment
+	
+#Question 5
+
+setupAll()
+succeedingTest()
+skippedTest()
+abortedTest()
+failingTest()
+teardownAll()
