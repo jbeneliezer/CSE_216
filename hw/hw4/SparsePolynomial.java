@@ -14,9 +14,13 @@ public class SparsePolynomial implements Polynomial {
      * @param s canonical string representation of a polynomial
      */
     public SparsePolynomial(String s) {
-        String[] expressions = s.split("\\s[+-]\\s");
+        String[] expressions = s.split("\\s(?=[+-])");
         for (String i: expressions) {
-            int coefficient = Integer.parseInt("0" + i.split("x")[0]);
+            int sign = 1;
+            if (i.charAt(0) == '-') {
+                sign = -1;
+            }
+            int coefficient = sign * Integer.parseInt("0" + i.split("x")[0]);
             int exponent = Integer.parseInt(i.contains("\\^") ? "0" + i.split("\\^")[1]: (i.contains("x") ? "1": "0"));
             this.polynomial.put(exponent, coefficient);
         }

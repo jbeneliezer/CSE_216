@@ -1,5 +1,3 @@
-import java.util.*;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestDensePolynomial {
@@ -7,9 +5,11 @@ public class TestDensePolynomial {
     /**
      * Tests the string parameterized constructor for DensePolynomial, and uses the assertArrayEquals method to compare
      * return value of getPolynomial() to equivalent int array
+     *
+     * Tests edge cases and test invalid input with assertThrows
      */
     public static void testConstructor(){
-        DensePolynomial p_1 = new DensePolynomial("2x^3 + 3x^2 + 2x + 1");
+        DensePolynomial p_1 = new DensePolynomial("2x^3 - 3x^2 + 2x + 1");
         DensePolynomial p_2 = new DensePolynomial("0");
         DensePolynomial p_3 = new DensePolynomial("x");
         DensePolynomial p_4 = new DensePolynomial(String.format("%dx^%d", Integer.MAX_VALUE, DensePolynomial.MAX_SIZE - 1));
@@ -17,7 +17,7 @@ public class TestDensePolynomial {
         int[] t_1 = new int[DensePolynomial.MAX_SIZE];
         t_1[0] = 1;
         t_1[1] = 2;
-        t_1[2] = 3;
+        t_1[2] = -3;
         t_1[3] = 2;
         int[] t_2 = new int[DensePolynomial.MAX_SIZE];
         int[] t_3 = new int[DensePolynomial.MAX_SIZE];
@@ -30,13 +30,19 @@ public class TestDensePolynomial {
         assertArrayEquals(t_3, p_3.getPolynomial(), "should equal {0, 1, 0, 0, ...}");
         assertArrayEquals(t_4, p_4.getPolynomial(), "should equal {..., Integer.MAX_VALUE}");
         assertArrayEquals(t_5, p_5.getPolynomial(), "should equal {0, 0, 0, ...}");
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
+            new DensePolynomial(String.format("%dx^%d", 1, DensePolynomial.MAX_SIZE));
+        });
+        assertThrows(NumberFormatException.class, () -> {
+            new DensePolynomial("-x^-2");
+        });
     }
 
     /**
      * Tests that degree function of Dense Polynomial works, including max and min values
      */
     public static void testDegree() {
-        DensePolynomial p_1 = new DensePolynomial("2x^3 + 3x^2 + 2x + 1");
+        DensePolynomial p_1 = new DensePolynomial("2x^3 - 3x^2 + 2x + 1");
         DensePolynomial p_2 = new DensePolynomial("0");
         DensePolynomial p_3 = new DensePolynomial("x");
         DensePolynomial p_4 = new DensePolynomial(String.format("%dx^%d", Integer.MAX_VALUE, DensePolynomial.MAX_SIZE - 1));
@@ -54,9 +60,23 @@ public class TestDensePolynomial {
         assertTrue(p_1.isZero());
         assertFalse(p_2.isZero());
     }
+
+    public static void testAdd() {
+        DensePolynomial p_1 = new DensePolynomial("4x^4 + 3x^2 - 2x + 6");
+        DensePolynomial p_2 = new DensePolynomial("3x^3 + 7x^2 + x - 1");
+        int[] t_1 = new int[DensePolynomial.MAX_SIZE];
+        t_1[0] = 5;
+        t_1[1] = -1;
+        t_1[2] = 10;
+        t_1[3] = 3;
+        t_1[4] = 4;
+        assertArrayEquals(((DensePolynomial) p_1.add(p_2)).getPolynomial(), t_1, "should be {5, -1, 10, 3, 4, ...}");
+    }
+
     public static void main(String... args) {
         testConstructor();
         testDegree();
         testIsZero();
+        testAdd();
     }
 }

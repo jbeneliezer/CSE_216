@@ -21,10 +21,21 @@ public class DensePolynomial implements Polynomial {
      * @param s canonical string representation of a polynomial
      * @throws ArrayIndexOutOfBoundsException for polynomials containing exponents greater than MAX_SIZE
      */
-    public DensePolynomial(String s) throws ArrayIndexOutOfBoundsException {
-        String[] expressions = s.split("\\s[+-]\\s");
+    public DensePolynomial(String s) throws ArrayIndexOutOfBoundsException, NumberFormatException {
+        if (s.length() == 0) return;
+        String[] expressions = s.split("\\s(?=[+-]\\s)");
         for (String i: expressions) {
-            int coefficient = Integer.parseInt("0" + (i.split("x").length == 0 ? 1: i.split("x")[0]));
+            int sign = 1;
+            if (i.charAt(0) == '-') {
+                sign = -1;
+                i = i.substring(1);
+            } else if (i.charAt(0) == '+') {
+                i = i.substring(1);
+            }
+            if (i.charAt(0) == ' ') {
+                i = i.substring(1);
+            }
+            int coefficient = sign * Integer.parseInt("0" + (i.split("x").length == 0 ? 1: i.split("x")[0]));
             int exponent = Integer.parseInt(i.contains("^") ? "0" + i.split("\\^")[1]: (i.contains("x") ? "1": "0"));
             this.polynomial[exponent] = coefficient;
         }
@@ -206,11 +217,11 @@ public class DensePolynomial implements Polynomial {
         } else {
             for (int i = MAX_SIZE - 1; i > 1; --i) {
                 if (this.getPolynomial()[i] != 0) {
-                    str.append(this.getPolynomial()[i] == 1 ? 1: this.getPolynomial()[i]).append("x^").append(i).append(" + ");
+                    str.append(this.getPolynomial()[i] == 1 ? "": this.getPolynomial()[i]).append("x^").append(i).append(" + ");
                 }
             }
             if (this.getPolynomial()[1] != 0) {
-                str.append(this.getPolynomial()[1] == 1 ? 1 : this.getPolynomial()[1]).append("x + ");
+                str.append(this.getPolynomial()[1] == 1 ? "": this.getPolynomial()[1]).append("x + ");
             }
             if (this.getPolynomial()[0] != 0) {
                 str.append(this.getPolynomial()[0]).append(" + ");
