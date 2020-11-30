@@ -2,9 +2,10 @@ import java.util.*;
 
 public class SparsePolynomial implements Polynomial {
 
-    private Map<Integer, Integer> polynomial = new HashMap<>();
+    private Map<Integer, Integer> polynomial;
+    private String expression;
 
-    private SparsePolynomial(Map<Integer, Integer> p) {
+    public SparsePolynomial(Map<Integer, Integer> p) {
         this.polynomial = p;
     }
 
@@ -13,21 +14,30 @@ public class SparsePolynomial implements Polynomial {
      *
      * @param s canonical string representation of a polynomial
      */
-    public SparsePolynomial(String s) {
-        String[] expressions = s.split("\\s(?=[+-])");
-        for (String i: expressions) {
+    public SparsePolynomial(String s) throws NumberFormatException {
+        this.expression = s;
+        if (expression.length() == 0 || !this.wellFormed()) throw new NumberFormatException("Expression must be canonical and cannot be empty.");
+        String[] terms = expression.split("\\s(?=[+-]\\s)");
+        polynomial = new HashMap<>();
+        for (String i: terms) {
             int sign = 1;
             if (i.charAt(0) == '-') {
                 sign = -1;
+                i = i.substring(1);
+            } else if (i.charAt(0) == '+') {
+                i = i.substring(1);
             }
-            int coefficient = sign * Integer.parseInt("0" + i.split("x")[0]);
-            int exponent = Integer.parseInt(i.contains("\\^") ? "0" + i.split("\\^")[1]: (i.contains("x") ? "1": "0"));
+            if (i.charAt(0) == ' ') {
+                i = i.substring(1);
+            }
+            int coefficient = sign * Integer.parseInt((i.split("x").length == 0) ? "1": i.split("x")[0]);
+            int exponent = Integer.parseInt(i.contains("^") ? i.split("\\^")[1]: (i.contains("x") ? "1": "0"));
             this.polynomial.put(exponent, coefficient);
         }
     }
 
     public Map<Integer, Integer> getPolynomial() {
-        return polynomial;
+        return this.polynomial;
     }
 
     /**
@@ -57,7 +67,7 @@ public class SparsePolynomial implements Polynomial {
      */
     @Override
     public boolean isZero() {
-        return this.getPolynomial().isEmpty();
+        return this.getPolynomial().values().stream().noneMatch(s -> s != 0);
     }
 
     /**
@@ -108,8 +118,8 @@ public class SparsePolynomial implements Polynomial {
         if (q.getClass() == SparsePolynomial.class) {
             for (Integer i: this.getPolynomial().keySet()) {
                 for (Integer j: ((SparsePolynomial) q).getPolynomial().keySet()) {
-                    if (newMap.containsKey(i * j)) {
-                        newMap.replace(i + j, newMap.get(i * j) + this.getPolynomial().get(i) * ((SparsePolynomial) q).getPolynomial().get(j));
+                    if (newMap.containsKey(i + j)) {
+                        newMap.replace(i + j, newMap.get(i + j) + this.getPolynomial().get(i) * ((SparsePolynomial) q).getPolynomial().get(j));
                     } else {
                         newMap.put(i + j, this.getPolynomial().get(i) * ((SparsePolynomial) q).getPolynomial().get(j));
                     }
@@ -119,8 +129,8 @@ public class SparsePolynomial implements Polynomial {
             for (Integer i: this.getPolynomial().keySet()) {
                 for (int j = 0; j < ((DensePolynomial) q).getPolynomial().length; ++j) {
                     if (((DensePolynomial) q).getPolynomial()[j] == 0) continue;
-                    if (newMap.containsKey(i * j)) {
-                        newMap.replace(i + j, newMap.get(i * j) + this.getPolynomial().get(i) * ((DensePolynomial) q).getPolynomial()[j]);
+                    if (newMap.containsKey(i + j)) {
+                        newMap.replace(i + j, newMap.get(i + j) + this.getPolynomial().get(i) * ((DensePolynomial) q).getPolynomial()[j]);
                     } else {
                         newMap.put(i + j, this.getPolynomial().get(i) * ((DensePolynomial) q).getPolynomial()[j]);
                     }
@@ -184,8 +194,8 @@ public class SparsePolynomial implements Polynomial {
      */
     @Override
     public boolean wellFormed() {
-        return this.getPolynomial().keySet().stream().filter(s -> s.getClass() != Integer.class).count() == 0 &&
-                this.getPolynomial().values().stream().filter(s -> s.getClass() != Integer.class).count() == 0;
+        String condensed = this.expression.replaceAll("[\\d.]", "");
+        return !condensed.contains(".");
     }
 
     /**
@@ -196,20 +206,36 @@ public class SparsePolynomial implements Polynomial {
     public String toString() {
         TreeMap<Integer, Integer> sortedMap = new TreeMap<>(this.getPolynomial());
         StringBuilder str = new StringBuilder();
-        for (Integer i: sortedMap.descendingKeySet()) {
-            if (i > 1) {
-                str.append(sortedMap.get(i) == 1 ? "": sortedMap.get(i)).append("x^").append(i).append(" + ");
-            } else if (i == 1) {
-                str.append(sortedMap.get(i) == 1 ? "": sortedMap.get(i)).append("x").append(" + ");
-            } else if (i == 0) {
-                str.append(sortedMap.get(i)).append(" + ");
+        String sign;
+        if (this.isZero()) {
+            return "0";
+        } else {
+            int time = 0;
+            for (Integer i : sortedMap.descendingKeySet()) {
+                if (i == 1) {
+                    sign = (sortedMap.get(i) > 0) ? "+ ": "- ";
+                    str.append((time == 0)? "": sign).append(sortedMap.get(i) == 1 ? "": sortedMap.get(i)).append("x ");
+                    ++time;
+                } else if (i == 0) {
+                    sign = (sortedMap.get(i) > 0) ? "+ ": "- ";
+                    str.append((time == 0) ? "": sign).append(sortedMap.get(i)).append(" ");
+                } else {
+                    sign = (this.getPolynomial().get(i) > 0) ? "+ ": "- ";
+                    str.append((time == 0)? "": sign).append(sortedMap.get(i) == 1 ? "": Math.abs(sortedMap.get(i))).append("x^").append(i).append(" ");
+                    ++time;
+                }
             }
         }
-        if (str.length() == 0) {
-            str.append("0");
-        } else {
-            str.delete(str.length() - 3, str.length() - 1);
-        }
+        str.deleteCharAt(str.length() - 1);
         return str.toString();
-    } //TODO add support for negative numbers
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof SparsePolynomial) {
+            return this.getPolynomial().equals(((SparsePolynomial) obj).getPolynomial());
+        } else {
+            return false;
+        }
+    }
 }

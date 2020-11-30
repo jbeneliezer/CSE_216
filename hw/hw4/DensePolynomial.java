@@ -3,7 +3,8 @@ import java.util.*;
 public class DensePolynomial implements Polynomial {
 
     public static final int MAX_SIZE = 100;    //set to highest valid exponent
-    private int[] polynomial = new int[MAX_SIZE];
+    private String expression;
+    private int[] polynomial;
 
     /**
      * Constructor for creating DensePolynomials from int arrays
@@ -11,6 +12,7 @@ public class DensePolynomial implements Polynomial {
      * @param p int array to be set to this.polynomial
      */
     private DensePolynomial(int[] p) {
+        polynomial = new int[MAX_SIZE];
         this.polynomial = Arrays.copyOfRange(p, 0, MAX_SIZE);
     }
 
@@ -22,9 +24,11 @@ public class DensePolynomial implements Polynomial {
      * @throws ArrayIndexOutOfBoundsException for polynomials containing exponents greater than MAX_SIZE
      */
     public DensePolynomial(String s) throws ArrayIndexOutOfBoundsException, NumberFormatException {
-        if (s.length() == 0) return;
-        String[] expressions = s.split("\\s(?=[+-]\\s)");
-        for (String i: expressions) {
+        this.expression = s;
+        if (expression.length() == 0 || !this.wellFormed()) throw new NumberFormatException("Expression must be canonical and cannot be empty.");
+        String[] terms = expression.split("\\s(?=[+-]\\s)");
+        polynomial = new int[MAX_SIZE];
+        for (String i: terms) {
             int sign = 1;
             if (i.charAt(0) == '-') {
                 sign = -1;
@@ -49,6 +53,7 @@ public class DensePolynomial implements Polynomial {
     public int[] getPolynomial() {
         return this.polynomial;
     }
+
 
     /**
      * Returns the degree of the polynomial.
@@ -82,7 +87,7 @@ public class DensePolynomial implements Polynomial {
      */
     @Override
     public boolean isZero() {
-        return (Arrays.stream(this.getPolynomial()).filter(s -> s != 0).count()) == 0;
+        return Arrays.stream(this.getPolynomial()).noneMatch(s -> s != 0);
     }
 
     /**
@@ -180,9 +185,10 @@ public class DensePolynomial implements Polynomial {
      * Returns a polynomial by negating the current instance. The current instance is not modified.
      *
      * @return -this
+     * @throws NullPointerException when called before DensePolynomial is initialized
      */
     @Override
-    public Polynomial minus() {
+    public Polynomial minus() throws NullPointerException {
         int[] new_polynomial = new int[MAX_SIZE];
         for (int i = 0; i < MAX_SIZE; ++i) {
             new_polynomial[i] = -this.getPolynomial()[i];
@@ -197,12 +203,8 @@ public class DensePolynomial implements Polynomial {
      */
     @Override
     public boolean wellFormed() {
-        for (Object i: this.getPolynomial()) {
-            if (i.getClass() != Integer.class) {    //array indices are always integers so only checking class of coefficients
-                return false;
-            }
-        }
-        return true;
+        String condensed = this.expression.replaceAll("(?<!\\^)[^\\d.]", "");
+        return !condensed.contains(".") && !condensed.contains("-");
     }
 
     /**
@@ -212,26 +214,38 @@ public class DensePolynomial implements Polynomial {
      */
     public String toString() {
         StringBuilder str = new StringBuilder();
+        String sign;
         if (this.isZero()) {
             return "0";
         } else {
+            int time = 0;
             for (int i = MAX_SIZE - 1; i > 1; --i) {
                 if (this.getPolynomial()[i] != 0) {
-                    str.append(this.getPolynomial()[i] == 1 ? "": this.getPolynomial()[i]).append("x^").append(i).append(" + ");
+                    sign = (this.getPolynomial()[i] > 0) ? "+ ": "- ";
+                    str.append((time == 0)? "": sign).append(this.getPolynomial()[i] == 1 ? "": Math.abs(this.getPolynomial()[i])).append("x^").append(i).append(" ");
+                    ++time;
                 }
             }
             if (this.getPolynomial()[1] != 0) {
-                str.append(this.getPolynomial()[1] == 1 ? "": this.getPolynomial()[1]).append("x + ");
+                sign = (this.getPolynomial()[1] > 0) ? "+ ": "- ";
+                str.append((time == 0)? "": sign).append(this.getPolynomial()[1] == 1 ? "": this.getPolynomial()[1]).append("x ");
+                ++time;
             }
             if (this.getPolynomial()[0] != 0) {
-                str.append(this.getPolynomial()[0]).append(" + ");
+                sign = (this.getPolynomial()[0] > 0) ? "+ ": "- ";
+                str.append((time == 0) ? "": sign).append(this.getPolynomial()[0]).append(" ");
             }
         }
-        if (str.length() == 0) {
-            str.append("0");
-        } else {
-            str.delete(str.length() - 3, str.length() - 1);
-        }
+        str.deleteCharAt(str.length() - 1);
         return str.toString();
-    } //TODO add support for negative numbers
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof DensePolynomial) {
+            return this.getPolynomial() == ((DensePolynomial) obj).getPolynomial();
+        } else {
+            return false;
+        }
+    }
 }
