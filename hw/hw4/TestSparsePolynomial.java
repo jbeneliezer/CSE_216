@@ -1,8 +1,8 @@
+import org.junit.jupiter.api.Assertions;
+
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-public class TestSparsePolynomial {
+public class TestSparsePolynomial extends Assertions {
 
     /**
      * Tests the string parameterized constructor for SparsePolynomial, and uses the assertArrayEquals method to compare

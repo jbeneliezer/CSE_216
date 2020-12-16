@@ -1,6 +1,6 @@
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
 
-public class TestDensePolynomial {
+public class TestDensePolynomial extends Assertions {
 
     /**
      * Tests the string parameterized constructor for DensePolynomial, and uses the assertArrayEquals method to compare
